@@ -1,0 +1,68 @@
+{
+  "$schema": "./agent.config.schema.json",
+  "safety": {
+    "maxFilesPerTask": 10,
+    "maxLinesPerTask": 500,
+    "protectedPaths": [
+      "package.json",
+      "pnpm-workspace.yaml",
+      "pnpm-lock.yaml",
+      "tsconfig.json",
+      "tsconfig.base.json",
+      ".gitignore",
+      ".github/",
+      "Dockerfile",
+      "docker-compose.yml",
+      ".env",
+      ".env.*",
+      "scripts/agent/state/",
+      "scripts/agent/agent.config.json"
+    ],
+    "requireApprovalFor": ["delete", "migration"]
+  },
+  "git": {
+    "autoCommit": true,
+    "branchPrefix": "agent/",
+    "commitTemplate": "{type}: {description} [agent:{task-id}]">
+  },
+  "validation": {
+    "commands": [
+      "pnpm run typecheck",
+      "pnpm run build"
+    ],
+    "timeout": 120000,
+    "preCheck": true,
+    "postCheck": true
+  },
+  "queue": {
+    "maxConcurrent": 1,
+    "maxRetries": 3,
+    "backoffMs": 60000,
+    "priorityOrder": ["critical", "high", "normal", "low"]
+  },
+  "audit": {
+    "enabled": true,
+    "logFile": "audit.log",
+    "diffDir": "diffs",
+    "maxLogSize": 10485760,
+    "rotateOnSize": true,
+    "retentionDays": 30
+  },
+  "rollback": {
+    "autoRollback": true,
+    "backupDir": "backups",
+    "cleanupAfterDays": 7
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "output": "file"
+  },
+  "features": {
+    "autoBranch": true,
+    "autoCommit": true,
+    "autoRollback": true,
+    "dryRunSupport": true,
+    "emergencyStop": true
+  }
+}
